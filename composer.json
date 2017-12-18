@@ -1,0 +1,43 @@
+{
+	"name": "perturbatio/wildcache",
+	"description": "",
+	"license": "MIT",
+	"keywords": [
+		"laravel",
+		"cache",
+		"wildcard"
+	],
+	"authors": [
+		{
+			"name": "Kris Kelly",
+			"email": "bertpotato@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Perturbatio\\WildCache\\": "src/"
+		},
+		"files": [
+			"src/helpers.php"
+		]
+	},
+	"require-dev": {
+		"phpunit/phpunit": "6.*",
+		"orchestra/testbench": "3.5.*"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Perturbatio\\WildCache\\Tests\\": "tests/"
+		}
+	},
+	"require": {
+		"Illuminate/Support": "^5.5",
+		"Illuminate/Cache": "^5.5"
+	},
+	"scripts": {
+		"test": "phpunit tests"
+	},
+	"branch-alias": {
+		"dev-master": "1.0-dev"
+	}
+}
