@@ -24,6 +24,8 @@ class WildCacheProvider extends ServiceProvider {
 		$this->app->singleton(WildCache::class, function ( $app ) {
 			return new WildCache();
 		});
+		
+        	$this->app->alias('wildcache', WildCache::class);
 	}
 
 	/**
