@@ -24,6 +24,8 @@ class WildCacheProvider extends ServiceProvider {
 		$this->app->singleton(WildCache::class, function ( $app ) {
 			return new WildCache();
 		});
+		
+        	$this->app->alias('wildcache', WildCache::class);
 	}
 
 	/**
@@ -32,7 +34,7 @@ class WildCacheProvider extends ServiceProvider {
 	 * @return string
 	 */
 	protected function getConfigPath() {
-		return config_path('cachetags.php');
+		return config_path('wildcache.php');
 	}
 
 	/**
@@ -41,7 +43,7 @@ class WildCacheProvider extends ServiceProvider {
 	 * @param  string $configPath
 	 */
 	protected function publishConfig( $configPath ) {
-		$this->publishes([$configPath => config_path('cachetags.php')], 'config');
+		$this->publishes([$configPath => config_path('wildcache.php')], 'config');
 	}
 
 }
