@@ -2,6 +2,7 @@
 
 namespace Perturbatio\WildCache;
 
+use Illuminate\Cache\RetrievesMultipleKeys;
 use Illuminate\Container\EntryNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
@@ -18,6 +19,8 @@ use Illuminate\Support\Traits\Macroable;
  * @package App\Libraries
  */
 class WildCache {
+
+	use RetrievesMultipleKeys;
 
 	use Macroable;
 
@@ -75,9 +78,10 @@ class WildCache {
 	 * return a collection regardless of the number of results
 	 *
 	 * @param $key
+	 *
 	 * @return Collection
 	 */
-	public function get( $key ) {
+	public function get( $key, $default = null ) {
 		$result = [];
 		if ($key === $this->cacheKey) {
 			return collect();
@@ -93,8 +97,28 @@ class WildCache {
 			}, []);
 		}
 
+		return count($result) > 0 ? collect($result) : collect($default);
+	}
 
-		return collect($result);
+	/**
+	 * Get the first item matching key
+	 *
+	 * @param               $key
+	 * @param null          $default
+	 *
+	 * @return mixed
+	 */
+	public function first( $key, $default = null ) {
+		return $this->get($key)->first(null, $default);
+	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 * @param $minutes
+	 */
+	public function put( $key, $value, $minutes ) {
+		app('cache')->put($key, $value, $minutes);
 	}
 
 	/**
@@ -103,7 +127,7 @@ class WildCache {
 	public function loadMap() {
 		try {
 			return app('cache')->get($this->cacheKey);
-		} catch (EntryNotFoundException $exception){
+		} catch (EntryNotFoundException $exception) {
 			//handle exception
 			return [];
 		}
@@ -203,5 +227,30 @@ class WildCache {
 		app('events')->listen('Illuminate\Cache\Events\KeyForgotten', 'Perturbatio\WildCache\Listeners\WildCacheKeyForgotten');
 		app('events')->listen('Illuminate\Cache\Events\KeyWritten', 'Perturbatio\WildCache\Listeners\WildCacheKeyWritten');
 	}
+
+	/**
+	 * Retrieve multiple items from the cache by key.
+	 *
+	 * Items not found in the cache will have a null value.
+	 *
+	 * @param array $keys
+	 *
+	 * @return Collection
+	 */
+	public function many( array $keys ) {
+		$result = collect();
+
+		foreach ($keys as $key) {
+			$value = $this->get($key);
+			if ($value->count() > 0) {
+				$result = $result->merge($value);
+			} else {
+				$result->put($key, null);
+			}
+		}
+
+		return $result;
+	}
+
 
 }
