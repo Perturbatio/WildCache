@@ -38,6 +38,6 @@
 		"test": "phpunit tests"
 	},
 	"branch-alias": {
-		"dev-master": "1.0-dev"
+		"dev-master": "1.1-dev"
 	}
 }
