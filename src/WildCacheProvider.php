@@ -2,7 +2,11 @@
 
 namespace Perturbatio\WildCache;
 
+use Illuminate\Cache\Events\KeyForgotten;
+use Illuminate\Cache\Events\KeyWritten;
 use Illuminate\Support\ServiceProvider;
+use Perturbatio\WildCache\Listeners\WildCacheKeyForgotten;
+use Perturbatio\WildCache\Listeners\WildCacheKeyWritten;
 
 class WildCacheProvider extends ServiceProvider {
 	/**
@@ -11,8 +15,8 @@ class WildCacheProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->app('events')->listen('Illuminate\Cache\Events\KeyForgotten', 'Perturbatio\WildCache\WildCacheKeyForgotten');
-		$this->app('events')->listen('Illuminate\Cache\Events\KeyWritten', 'Perturbatio\WildCache\WildCacheKeyWritten');
+		$this->app['events']->listen(KeyForgotten::class, WildCacheKeyForgotten::class);
+		$this->app['events']->listen(KeyWritten::class, WildCacheKeyWritten::class);
 	}
 
 	/**

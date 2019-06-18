@@ -4,64 +4,86 @@ namespace Perturbatio\WildCache\Tests;
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 
+use Orchestra\Testbench\TestCase;
 use Perturbatio\WildCache\WildCache;
+use Perturbatio\WildCache\WildCacheProvider;
 use stdClass;
 
-class WildCacheTest extends \Orchestra\Testbench\TestCase {
+class WildCacheTest extends TestCase {
 	/**
-	 * @var
+	 * @var \Illuminate\Support\Facades\Cache
 	 */
-	public $wildCache;
+	protected $appCache;
 
-	public function setUp() {
+	public function setUp(): void
+	{
 		parent::setUp();
-		$this->app->singleton('wildcache', function ( $app ) {
-			return new WildCache();
-		});
+
+		$this->wildCache = app('wildcache');
+
+		$this->appCache = $this->app['cache'];
 	}
 
-	/** @test **/
-	public function it_returns_a_collection() {
+	/**
+	 * @param \Illuminate\Foundation\Application $app
+	 *
+	 * @return array
+	 */
+	protected function getPackageProviders( $app )
+	{
+		return [WildCacheProvider::class];
+	}
+
+	protected function getPackageAliases( $app )
+	{
+		return [
+			'wildcache' => WildCache::class,
+		];
+	}
+	/** @test * */
+	public function it_returns_a_collection()
+	{
 		/**
 		 * @var WildCache $wildCache
 		 */
-		$wildCache = $this->app['wildcache'];
+		$wildCache = app('wildcache');
 		$this->assertInstanceOf('Illuminate\Support\Collection', $wildCache->get('wildcache.test'));
 	}
 
-	/** @test **/
-	public function it_can_read_an_item_from_the_cache() {
-		/**
-		 * @var WildCache $wildCache
-		 */
-		$wildCache = $this->app['wildcache'];
-		$this->app['cache']->put('wildcache.test', 1, 10);
+	/** @test * */
+	public function it_can_read_an_item_from_the_cache()
+	{
+		$cacheKey   = 'wildcache.test';
+		$cacheValue = 9999;
+		$this->appCache->put($cacheKey, $cacheValue, now()->addMinutes(10));
 
-		$this->assertTrue($wildCache->get('wildcache.test')->first() === 1);
+		$this->assertTrue(app('wildcache')->get($cacheKey)->first() === $cacheValue);
 	}
 
-	/** @test **/
-	public function it_can_find_items_by_wildcard() {
+	/** @test * */
+	public function it_can_find_items_by_wildcard()
+	{
 		/**
 		 * @var WildCache $wildCache
 		 */
-		$wildCache = $this->app['wildcache'];
-		$this->app['cache']->put('wildcache.test.itemA', 'A', 10);
-		$this->app['cache']->put('wildcache.test.itemB', 'B', 10);
+		$wildCache = app('wildcache');
+		$this->appCache->put('wildcache.test.itemA', 'A', 10);
+		$this->appCache->put('wildcache.test.itemB', 'B', 10);
 
 		$this->assertEquals('A', $wildCache->get('wildcache.*')->first());
 		$this->assertEquals('B', $wildCache->get('wildcache.*')->get('wildcache.test.itemB'));
 	}
 
 	/** @test * */
-	public function it_can_clear_items_by_wildcard() {
+	public function it_can_clear_items_by_wildcard()
+	{
 		/**
 		 * @var WildCache $wildCache
 		 */
-		$wildCache = $this->app['wildcache'];
+		$wildCache = app('wildcache');
 
-		$this->app['cache']->put('wildcache.test.itemA', 'A', 10);
-		$this->app['cache']->put('wildcache.test.itemB', 'B', 10);
+		$this->appCache->put('wildcache.test.itemA', 'A', 10);
+		$this->appCache->put('wildcache.test.itemB', 'B', 10);
 
 		$this->assertEquals('A', $wildCache->get('wildcache.*')->first());
 		$this->assertEquals('B', $wildCache->get('wildcache.*')->get('wildcache.test.itemB'));
@@ -72,17 +94,22 @@ class WildCacheTest extends \Orchestra\Testbench\TestCase {
 		$this->assertNotEquals('B', $wildCache->get('wildcache.*')->get('wildcache.test.itemB'));
 	}
 
-	/** @test * */
-	public function it_can_clear_items_by_wildcard_preserving_siblings() {
+	/**
+	 * @test
+	 * @skip
+	 *
+	 */
+	public function it_can_clear_items_by_wildcard_preserving_siblings()
+	{
 		/**
 		 * @var WildCache $wildCache
 		 */
-		$wildCache = $this->app['wildcache'];
+		$wildCache = app('wildcache');
 
-		$this->app['cache']->put('wildcache.test.itemA', 'A', 10);
-		$this->app['cache']->put('wildcache.test.itemB', 'B', 10);
-		$this->app['cache']->put('wildcache.test2.itemC', 'C', 10);
-		$this->app['cache']->put('wildcache.test2.itemD', 'D', 10);
+		$this->appCache->put('wildcache.test.itemA', 'A', 10);
+		$this->appCache->put('wildcache.test.itemB', 'B', 10);
+		$this->appCache->put('wildcache.test2.itemC', 'C', 10);
+		$this->appCache->put('wildcache.test2.itemD', 'D', 10);
 
 
 		$wildCache->forget('wildcache.test.*');
@@ -94,16 +121,17 @@ class WildCacheTest extends \Orchestra\Testbench\TestCase {
 	}
 
 	/** @test * */
-	public function it_can_store_and_retrieve_objects() {
+	public function it_can_store_and_retrieve_objects()
+	{
 		/**
 		 * @var WildCache $wildCache
 		 */
-		$wildCache = $this->app['wildcache'];
-		$obj = new stdClass();
-		$obj->id = 1;
+		$wildCache = app('wildcache');
+		$obj       = new stdClass();
+		$obj->id   = 1;
 		$obj->text = "Lorem ipsum dolor sit amet";
 
-		$this->app['cache']->put('wildcache.test.obj', $obj, 10);
+		$this->appCache->put('wildcache.test.obj', $obj, 10);
 
 		$result = $wildCache->first('wildcache.test.obj');
 
@@ -112,15 +140,16 @@ class WildCacheTest extends \Orchestra\Testbench\TestCase {
 	}
 
 	/** @test * */
-	public function it_can_put_and_retrieve_multiple_keys() {
+	public function it_can_put_and_retrieve_multiple_keys()
+	{
 		/**
 		 * @var WildCache $wildCache
 		 */
-		$wildCache = $this->app['wildcache'];
+		$wildCache = app('wildcache');
 
 		$wildCache->putMany([
-			'wildcache.test.itemA' => 'A',
-			'wildcache.test.itemB' => 'B',
+			'wildcache.test.itemA'  => 'A',
+			'wildcache.test.itemB'  => 'B',
 			'wildcache.test2.itemC' => 'C',
 			'wildcache.test2.itemD' => 'D',
 		], 10);
@@ -135,9 +164,8 @@ class WildCacheTest extends \Orchestra\Testbench\TestCase {
 		$this->assertEquals('B', $vals['wildcache.test.itemB']);
 		$this->assertEquals('C', $vals['wildcache.test2.itemC']);
 		$this->assertEquals('D', $vals['wildcache.test2.itemD']);
-		$this->assertEquals(null, $vals['wildcache.test3.*'],'An invalid key did not return null');
+		$this->assertEquals(null, $vals['wildcache.test3.*'], 'An invalid key did not return null');
 	}
-
 
 
 }

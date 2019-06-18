@@ -22,8 +22,8 @@
 		]
 	},
 	"require-dev": {
-		"phpunit/phpunit": "6.*",
-		"orchestra/testbench": "3.5.*"
+		"phpunit/phpunit": "8.*",
+		"orchestra/testbench": "3.8.*"
 	},
 	"autoload-dev": {
 		"psr-4": {
@@ -31,8 +31,8 @@
 		}
 	},
 	"require": {
-		"Illuminate/Support": "5.5.*",
-		"Illuminate/Cache": "5.5.*"
+		"Illuminate/Support": "5.8.*",
+		"Illuminate/Cache": "5.8.*"
 	},
 	"scripts": {
 		"test": "phpunit tests"
