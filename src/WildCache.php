@@ -123,10 +123,10 @@ class WildCache {
 	/**
 	 * @param $key
 	 * @param $value
-	 * @param $minutes
+	 * @param $seconds
 	 */
-	public function put( $key, $value, $minutes ) {
-		app('cache')->put($key, $value, $minutes);
+	public function put( $key, $value, $seconds ) {
+		app('cache')->put($key, $value, $seconds);
 	}
 
 	/**
@@ -195,11 +195,11 @@ class WildCache {
 	 * @param $key
 	 * @param $tags
 	 * @param $value
-	 * @param $minutes
+	 * @param $seconds
 	 *
 	 * @return mixed
 	 */
-	public function handleWritten( $key, $tags, $value, $minutes ) {
+	public function handleWritten( $key, $tags, $value, $seconds ) {
 		if ($key === $this->cacheKey) {
 			return false;
 		}
