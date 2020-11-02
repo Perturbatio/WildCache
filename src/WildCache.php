@@ -2,15 +2,11 @@
 
 namespace Perturbatio\WildCache;
 
-use Illuminate\Cache\Events\KeyForgotten;
-use Illuminate\Cache\Events\KeyWritten;
 use Illuminate\Cache\RetrievesMultipleKeys;
 use Illuminate\Container\EntryNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\Arr;
-use Perturbatio\WildCache\Listeners\WildCacheKeyForgotten;
-use Perturbatio\WildCache\Listeners\WildCacheKeyWritten;
 
 /**
  * Created by kris with PhpStorm.
@@ -46,6 +42,8 @@ class WildCache {
 
 	/**
 	 * WildCache constructor.
+	 *
+	 * @param string $separator
 	 */
 	public function __construct( $separator = '.' ) {
 		$this->refreshMap();
@@ -83,6 +81,7 @@ class WildCache {
 	 * return a collection regardless of the number of results
 	 *
 	 * @param $key
+	 * @param null $default
 	 *
 	 * @return Collection
 	 */
@@ -217,7 +216,7 @@ class WildCache {
 		//trim trailing .* to allow "cache.items" to be the same as "cache.items.*
 		$key = rtrim($key, $this->separator . '*');
 
-		return collect(Arr::Get($this->map, $key))->flatten();
+		return collect(Arr::get($this->map, $key))->flatten();
 	}
 
 	/**
@@ -229,14 +228,6 @@ class WildCache {
 		Arr::set($this->map, $key, null);
 
 		return $this->writeMap();
-	}
-
-	/**
-	 *
-	 */
-	public function registerListeners() {
-		app('events')->listen(KeyForgotten::class, WildCacheKeyForgotten::class);
-		app('events')->listen(KeyWritten::class, WildCacheKeyWritten::class);
 	}
 
 	/**
