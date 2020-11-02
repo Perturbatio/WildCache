@@ -29,7 +29,7 @@ class WildCacheProvider extends ServiceProvider {
 			return new WildCache();
 		});
 
-        $this->app->alias('wildcache', WildCache::class);
+        $this->app->alias(WildCache::class, 'wildcache');
 	}
 
 }
