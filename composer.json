@@ -13,6 +13,14 @@
 			"email": "bertpotato@gmail.com"
 		}
 	],
+	"require": {
+		"illuminate/support": "^6|^7|^8",
+		"illuminate/cache": "^6|^7|^8"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^9.3",
+		"orchestra/testbench": "^6.3"
+	},
 	"autoload": {
 		"psr-4": {
 			"Perturbatio\\WildCache\\": "src/"
@@ -21,23 +29,22 @@
 			"src/helpers.php"
 		]
 	},
-	"require-dev": {
-		"phpunit/phpunit": "6.*",
-		"orchestra/testbench": "3.5.*"
-	},
 	"autoload-dev": {
 		"psr-4": {
 			"Perturbatio\\WildCache\\Tests\\": "tests/"
 		}
 	},
-	"require": {
-		"Illuminate/Support": "5.5.*",
-		"Illuminate/Cache": "5.5.*"
-	},
 	"scripts": {
 		"test": "phpunit tests"
 	},
 	"branch-alias": {
-		"dev-master": "1.0-dev"
+		"dev-master": "1.2-dev"
+	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Perturbatio\\WildCache\\WildCacheProvider"
+			]
+		}
 	}
 }

@@ -6,14 +6,6 @@ use Illuminate\Cache\Events\KeyWritten;
 use Perturbatio\WildCache\WildCache;
 
 class WildCacheKeyWritten {
-	/**
-	 * Create the event listener.
-	 *
-	 * @return void
-	 */
-	public function __construct() {
-		//
-	}
 
 	/**
 	 * Handle the event.
@@ -23,6 +15,6 @@ class WildCacheKeyWritten {
 	 * @return void
 	 */
 	public function handle( KeyWritten $event ) {
-		app(WildCache::class)->handleWritten($event->key, $event->tags, $event->value, $event->minutes);
+		app(WildCache::class)->handleWritten($event->key, $event->tags, $event->value, $event->seconds);
 	}
 }

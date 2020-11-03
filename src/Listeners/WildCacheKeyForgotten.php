@@ -6,13 +6,6 @@ use Illuminate\Cache\Events\KeyForgotten;
 use Perturbatio\WildCache\WildCache;
 
 class WildCacheKeyForgotten {
-	/**
-	 * Create the event listener.
-	 *
-	 */
-	public function __construct() {
-		//
-	}
 
 	/**
 	 * Handle the event.
@@ -21,7 +14,8 @@ class WildCacheKeyForgotten {
 	 *
 	 * @return void
 	 */
-	public function handle( KeyForgotten $event ) {
+	public function handle( KeyForgotten $event )
+	{
 		app(WildCache::class)->handleForgotten($event->key, $event->tags);
 	}
 }

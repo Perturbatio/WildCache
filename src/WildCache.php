@@ -6,6 +6,7 @@ use Illuminate\Cache\RetrievesMultipleKeys;
 use Illuminate\Container\EntryNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\Support\Arr;
 
 /**
  * Created by kris with PhpStorm.
@@ -41,11 +42,12 @@ class WildCache {
 
 	/**
 	 * WildCache constructor.
+	 *
+	 * @param string $separator
 	 */
 	public function __construct( $separator = '.' ) {
-		$this->map       = $this->loadMap();
+		$this->refreshMap();
 		$this->separator = $separator;
-		$this->registerListeners();
 	}
 
 	/**
@@ -54,6 +56,7 @@ class WildCache {
 	 * @return bool
 	 */
 	public function forget( $key ) {
+		$this->refreshMap();
 		$result = false;
 		if ($key === $this->cacheKey) {
 			return false;
@@ -78,10 +81,14 @@ class WildCache {
 	 * return a collection regardless of the number of results
 	 *
 	 * @param $key
+	 * @param null $default
 	 *
 	 * @return Collection
 	 */
 	public function get( $key, $default = null ) {
+		if (empty($this->map)){
+			$this->refreshMap();
+		}
 		$result = [];
 		if ($key === $this->cacheKey) {
 			return collect();
@@ -115,10 +122,10 @@ class WildCache {
 	/**
 	 * @param $key
 	 * @param $value
-	 * @param $minutes
+	 * @param $seconds
 	 */
-	public function put( $key, $value, $minutes ) {
-		app('cache')->put($key, $value, $minutes);
+	public function put( $key, $value, $seconds ) {
+		app('cache')->put($key, $value, $seconds);
 	}
 
 	/**
@@ -159,7 +166,7 @@ class WildCache {
 			return false;
 		}
 
-		array_forget($this->map, $key);
+		Arr::forget($this->map, $key);
 
 		$parts = explode($this->separator, $key);
 
@@ -168,8 +175,8 @@ class WildCache {
 		while ( !$canExit && empty($parts)) {
 			$partKey = implode($this->separator, $parts);
 			//as long as there's only one item in the current path, we're safe to purge it
-			if (count(array_get($this->map, $partKey)) < 2) {
-				array_forget($this->map, $partKey);
+			if (count(Arr::get($this->map, $partKey)) < 2) {
+				Arr::forget($this->map, $partKey);
 				array_pop($parts);
 			} else {
 				$canExit = true;
@@ -177,22 +184,25 @@ class WildCache {
 
 		}
 
-		return $this->writeMap();
+		if ($this->writeMap()){
+			$this->refreshMap();
+			return true;
+		}
 	}
 
 	/**
 	 * @param $key
 	 * @param $tags
 	 * @param $value
-	 * @param $minutes
+	 * @param $seconds
 	 *
 	 * @return mixed
 	 */
-	public function handleWritten( $key, $tags, $value, $minutes ) {
+	public function handleWritten( $key, $tags, $value, $seconds ) {
 		if ($key === $this->cacheKey) {
 			return false;
 		}
-		array_set($this->map, $key, $key);
+		Arr::set($this->map, $key, $key);
 
 		return $this->writeMap();
 	}
@@ -206,7 +216,7 @@ class WildCache {
 		//trim trailing .* to allow "cache.items" to be the same as "cache.items.*
 		$key = rtrim($key, $this->separator . '*');
 
-		return collect(array_get($this->map, $key))->flatten();
+		return collect(Arr::get($this->map, $key))->flatten();
 	}
 
 	/**
@@ -215,17 +225,9 @@ class WildCache {
 	 * @return mixed
 	 */
 	protected function removeKey( $key ) {
-		array_set($this->map, $key, null);
+		Arr::set($this->map, $key, null);
 
 		return $this->writeMap();
-	}
-
-	/**
-	 *
-	 */
-	public function registerListeners() {
-		app('events')->listen('Illuminate\Cache\Events\KeyForgotten', 'Perturbatio\WildCache\Listeners\WildCacheKeyForgotten');
-		app('events')->listen('Illuminate\Cache\Events\KeyWritten', 'Perturbatio\WildCache\Listeners\WildCacheKeyWritten');
 	}
 
 	/**
@@ -250,6 +252,16 @@ class WildCache {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function refreshMap() : WildCache
+	{
+		$this->map = $this->loadMap();
+
+		return $this;
 	}
 
 

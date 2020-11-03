@@ -2,7 +2,11 @@
 
 namespace Perturbatio\WildCache;
 
+use Illuminate\Cache\Events\KeyForgotten;
+use Illuminate\Cache\Events\KeyWritten;
 use Illuminate\Support\ServiceProvider;
+use Perturbatio\WildCache\Listeners\WildCacheKeyForgotten;
+use Perturbatio\WildCache\Listeners\WildCacheKeyWritten;
 
 class WildCacheProvider extends ServiceProvider {
 	/**
@@ -11,8 +15,8 @@ class WildCacheProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->app('events')->listen('Illuminate\Cache\Events\KeyForgotten', 'Perturbatio\WildCache\WildCacheKeyForgotten');
-		$this->app('events')->listen('Illuminate\Cache\Events\KeyWritten', 'Perturbatio\WildCache\WildCacheKeyWritten');
+		$this->app['events']->listen(KeyForgotten::class, WildCacheKeyForgotten::class);
+		$this->app['events']->listen(KeyWritten::class, WildCacheKeyWritten::class);
 	}
 
 	/**
@@ -24,26 +28,8 @@ class WildCacheProvider extends ServiceProvider {
 		$this->app->singleton(WildCache::class, function ( $app ) {
 			return new WildCache();
 		});
-		
-        $this->app->alias('wildcache', WildCache::class);
-	}
 
-	/**
-	 * Get the config path
-	 *
-	 * @return string
-	 */
-	protected function getConfigPath() {
-		return config_path('wildcache.php');
-	}
-
-	/**
-	 * Publish the config file
-	 *
-	 * @param  string $configPath
-	 */
-	protected function publishConfig( $configPath ) {
-		$this->publishes([$configPath => config_path('wildcache.php')], 'config');
+        $this->app->alias(WildCache::class, 'wildcache');
 	}
 
 }
