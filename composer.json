@@ -37,14 +37,14 @@
 	"scripts": {
 		"test": "phpunit tests"
 	},
-	"branch-alias": {
-		"dev-master": "1.2-dev"
-	},
 	"extra": {
 		"laravel": {
 			"providers": [
 				"Perturbatio\\WildCache\\WildCacheProvider"
 			]
+		},
+		"branch-alias": {
+			"dev-master": "1.0-dev"
 		}
 	}
 }
