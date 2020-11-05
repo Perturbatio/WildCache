@@ -1,8 +1,7 @@
 # WildCache
 
 
-[![Build Status](https://travis-ci.org/Perturbatio/WildCache.svg?branch=master)](https://travis-ci.org/Perturbatio
-/WildCache)
+[![Build Status](https://travis-ci.org/Perturbatio/WildCache.svg?branch=master)](https://travis-ci.org/Perturbatio/WildCache)
 [![Latest Stable Version](https://poser.pugx.org/perturbatio/wildcache/v/stable?format=flat)](https://packagist.org/packages/perturbatio/WildCache)
 [![Latest Unstable Version](https://poser.pugx.org/perturbatio/wildcache/v/unstable?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
 [![License](https://poser.pugx.org/perturbatio/wildcache/license?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
