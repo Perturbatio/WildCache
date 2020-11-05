@@ -1,4 +1,13 @@
 # WildCache
+
+
+[![Build Status](https://travis-ci.org/Perturbatio/WildCache.svg?branch=master)](https://travis-ci.org/Perturbatio
+/WildCache)
+[![Latest Stable Version](https://poser.pugx.org/perturbatio/wildcache/v/stable?format=flat)](https://packagist.org/packages/perturbatio/WildCache)
+[![Latest Unstable Version](https://poser.pugx.org/perturbatio/wildcache/v/unstable?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
+[![License](https://poser.pugx.org/perturbatio/wildcache/license?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
+[![Total Downloads](https://poser.pugx.org/perturbatio/wildcache/downloads?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
+
 Adds the ability to find or remove items in the Laravel cache by wildcard.
 
 ## Usage
