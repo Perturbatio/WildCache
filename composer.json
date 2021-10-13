@@ -31,8 +31,8 @@
 		}
 	},
 	"require": {
-		"Illuminate/Support": "5.8.*",
-		"Illuminate/Cache": "5.8.*"
+		"illuminate/support": "5.8.*",
+		"illuminate/cache": "5.8.*"
 	},
 	"scripts": {
 		"test": "phpunit tests"
