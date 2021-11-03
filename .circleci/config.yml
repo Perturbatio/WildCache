@@ -25,8 +25,8 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-
-      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File
+      - run: sudo apt install -y zlib1g-dev openssl
       - run: sudo -E docker-php-ext-install zip json mbstring openssl
 
       # Download and cache dependencies
