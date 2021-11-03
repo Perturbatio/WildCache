@@ -166,4 +166,9 @@ class WildCacheTest extends TestCase {
 		$this->assertFalse(Cache::has('windcache.test.itemB'));
 	}
 
+	public function test_load_map_returns_empty_array_if_key_does_not_exist()
+	{
+		$res = $this->wildCache->loadMap();
+		$this->assertEquals([], $res);
+	}
 }
