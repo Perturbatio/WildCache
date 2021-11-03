@@ -133,7 +133,7 @@ class WildCache {
 	 */
 	public function loadMap() {
 		try {
-			return app('cache')->get($this->cacheKey);
+			return app('cache')->get($this->cacheKey, []);
 		} catch (EntryNotFoundException $exception) {
 			//handle exception
 			return [];
@@ -186,8 +186,8 @@ class WildCache {
 
 		if ($this->writeMap()){
 			$this->refreshMap();
-			return true;
 		}
+		return true;
 	}
 
 	/**
