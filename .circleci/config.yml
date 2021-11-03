@@ -10,7 +10,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # Specify the version you desire here
-      - image: cimg/php:7.4
+      - image: circleci/php:7.4-node-browsers
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -26,8 +26,8 @@ jobs:
     steps:
       - checkout
       - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File
-      - run: sudo apt install -y zlib1g-dev openssl
-      - run: sudo -E docker-php-ext-install zip json mbstring openssl
+      - run: sudo apt install -y zlib1g-dev openssl libxml2-dev
+      - run: sudo -E docker-php-ext-install zip json mbstring
 
       # Download and cache dependencies
       - restore_cache:
