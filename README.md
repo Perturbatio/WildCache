@@ -1,7 +1,7 @@
 # WildCache
 
 [![CircleCI](https://circleci.com/gh/Perturbatio/WildCache/tree/master.svg?style=shield)](https://circleci.com/gh/Perturbatio/WildCache/tree/master)
-[![Latest Stable Version](https://poser.pugx.org/perturbatio/WildCache/v/stable?format=flat)](https://packagist.org/packages/perturbatio/cachetags)
+[![Latest Stable Version](https://poser.pugx.org/perturbatio/WildCache/v/stable?format=flat)](https://packagist.org/packages/perturbatio/WildCache)
 [![Latest Unstable Version](https://poser.pugx.org/perturbatio/wildcache/v/unstable?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
 [![License](https://poser.pugx.org/perturbatio/wildcache/license?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
 [![Total Downloads](https://poser.pugx.org/perturbatio/wildcache/downloads?format=flat)](https://packagist.org/packages/perturbatio/wildcache)
