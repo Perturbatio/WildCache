@@ -42,9 +42,6 @@
 			"providers": [
 				"Perturbatio\\WildCache\\WildCacheProvider"
 			]
-		},
-		"branch-alias": {
-			"dev-master": "2.0-dev"
 		}
 	}
 }
